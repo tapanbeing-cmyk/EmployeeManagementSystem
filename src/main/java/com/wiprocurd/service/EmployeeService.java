@@ -1,19 +1,19 @@
 package com.wiprocurd.service;
 
+import com.wiprocurd.dto.EmployeeDto;
+
 import java.util.List;
 
-import com.wiprocurd.entity.Employee;
-
 public interface EmployeeService {
-	Employee saveEmployee(Employee employee);
+	EmployeeDto saveEmployee(EmployeeDto employeeDto);
 
-	Employee updateEmployeeById(long employeeId, Employee employee);
+	EmployeeDto updateEmployeeById(long employeeId, EmployeeDto employeeDto);
 
-	Employee getEmployeeByid(long employeeId);
+	EmployeeDto getEmployeeByid(long employeeId);
 
-	List<Employee> getAllEmployee();
+	List<EmployeeDto> getAllEmployee();
 
 	void deleteEmployeeById(long employeeId);
 
-	List<Employee> saveAll(List<Employee> employee);
+	List<EmployeeDto> saveAll(List<EmployeeDto> employeeDtos);
 }

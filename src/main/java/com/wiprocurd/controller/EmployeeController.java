@@ -2,6 +2,7 @@ package com.wiprocurd.controller;
 
 import java.util.List;
 
+import com.wiprocurd.dto.EmployeeDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,29 +25,29 @@ public class EmployeeController {
     private EmployeeServiceImpl employeeServiceImpl;
 
     @PostMapping("/save")
-    public ResponseEntity<Employee> saveEmployee(@RequestBody Employee employee) {
-        Employee createdEmployee = employeeServiceImpl.saveEmployee(employee);
+    public ResponseEntity<EmployeeDto> saveEmployee(@RequestBody EmployeeDto employeeDto) {
+        EmployeeDto createdEmployee = employeeServiceImpl.saveEmployee(employeeDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdEmployee);
     }
 
     @PostMapping("/saveAll")
-    public ResponseEntity<List<Employee>> saveEmployee(@RequestBody List<Employee> employee) {
-        return ResponseEntity.ok(employeeServiceImpl.saveAll(employee));
+    public ResponseEntity<List<EmployeeDto>> saveEmployee(@RequestBody List<EmployeeDto> employeeDtos) {
+        return ResponseEntity.ok(employeeServiceImpl.saveAll(employeeDtos));
     }
 
     @PatchMapping("update/{employeeId}")
-    public ResponseEntity<Employee> updateEmployeeById(@PathVariable long employeeId, @RequestBody Employee employee) {
-        return ResponseEntity.ok(employeeServiceImpl.updateEmployeeById(employeeId, employee));
+    public ResponseEntity<EmployeeDto> updateEmployeeById(@PathVariable long employeeId, @RequestBody EmployeeDto employeeDto) {
+        return ResponseEntity.ok(employeeServiceImpl.updateEmployeeById(employeeId, employeeDto));
     }
 
     @GetMapping("get/{employeeId}")
-    public ResponseEntity<Employee> getEmployeeByid(@PathVariable long employeeId) {
-        Employee employeeByid = employeeServiceImpl.getEmployeeByid(employeeId);
+    public ResponseEntity<EmployeeDto> getEmployeeByid(@PathVariable long employeeId) {
+        EmployeeDto employeeByid = employeeServiceImpl.getEmployeeByid(employeeId);
         return employeeByid != null ? ResponseEntity.ok(employeeByid) : ResponseEntity.notFound().build();
     }
 
     @GetMapping
-    public ResponseEntity<List<Employee>> getAllEmployee() {
+    public ResponseEntity<List<EmployeeDto>> getAllEmployee() {
         return ResponseEntity.ok(employeeServiceImpl.getAllEmployee());
     }
 

@@ -1,52 +1,79 @@
 package com.wiprocurd.service;
 
+import com.wiprocurd.dto.EmployeeDto;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
+import java.util.stream.Collectors;
+
 import com.wiprocurd.entity.Employee;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
-	@Autowired
-	private com.wiprocurd.repo.EmployeeRepo employeeRepo;
+    @Autowired
+    private com.wiprocurd.repo.EmployeeRepo employeeRepo;
+    @Autowired
+    private ModelMapper modelMapper;
 
-	@Override
-	public Employee saveEmployee(Employee employee) {
-		// TODO Auto-generated method stub
-		return employeeRepo.save(employee);
-	}
+    private EmployeeDto toDto(Employee employee) {
+        return modelMapper.map(employee, EmployeeDto.class);
 
-	@Override
-	public Employee updateEmployeeById(long employeeId, Employee employee) {
-		// TODO Auto-generated method stub
-		Employee existingEmployee = employeeRepo.findById(employeeId).orElseThrow();
-		existingEmployee.setFirstName(employee.getFirstName());
-		existingEmployee.setLastName(employee.getLastName());
-		existingEmployee.setSalary(employee.getSalary());
-		return employeeRepo.save(existingEmployee);
-	}
+    }
 
-	@Override
-	public Employee getEmployeeByid(long employeeId) {
-		Employee employee = employeeRepo.findById(employeeId).orElseThrow();
-		return employee;
-	}
+    private Employee toEntity(EmployeeDto employeeDto) {
+        return modelMapper.map(employeeDto, Employee.class);
 
-	@Override
-	public List<Employee> getAllEmployee() {
-		// TODO Auto-generated method stub
-		return employeeRepo.findAll();
-	}
+    }
 
-	@Override
-	public void deleteEmployeeById(long employeeId) {
-		// TODO Auto-generated method stub
-		employeeRepo.deleteById(employeeId);
-	}
+    @Override
+    public EmployeeDto saveEmployee(EmployeeDto employeeDto) {
+        // TODO Auto-generated method stub
+        Employee employee = toEntity(employeeDto);
+        Employee savedEmployee = employeeRepo.save(employee);
+        return toDto(savedEmployee);
+    }
 
-	@Override
-	public List<Employee> saveAll(List<Employee> employee) {
-		return  employeeRepo.saveAll(employee);
-	}
+    @Override
+    public EmployeeDto updateEmployeeById(long employeeId, EmployeeDto employeeDto) {
+        // TODO Auto-generated method stub
+        Employee existingEmployee = employeeRepo.findById(employeeId).orElseThrow();
+        existingEmployee.setFirstName(employeeDto.getFirstName());
+        existingEmployee.setLastName(employeeDto.getLastName());
+        existingEmployee.setSalary(employeeDto.getSalary());
+        Employee update = employeeRepo.save(existingEmployee);
+        return toDto(update);
+    }
+
+    @Override
+    public EmployeeDto getEmployeeByid(long employeeId) {
+        Employee emp = employeeRepo.findById(employeeId).orElseThrow();
+        return toDto(emp);
+    }
+
+    @Override
+    public List<EmployeeDto> getAllEmployee() {
+        // TODO Auto-generated method stub
+        return employeeRepo.findAll().stream().map(this::toDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteEmployeeById(long employeeId) {
+        // TODO Auto-generated method stub
+        employeeRepo.deleteById(employeeId);
+    }
+
+    @Override
+    public List<EmployeeDto> saveAll(List<EmployeeDto> employeeDtos) {
+        List<Employee> employees = employeeDtos.stream()
+                .map(this::toEntity)
+                .collect(Collectors.toList());
+        return employeeRepo.saveAll(employees)
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+
+    }
 
 }
